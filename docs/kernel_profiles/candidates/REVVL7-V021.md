@@ -37,10 +37,17 @@ values still need safe device validation.
 
 The vendor boot DTBs reserve physical memory starting at `0x80000000`, but
 their `/memory/reg` entries are zero placeholders. They do not establish the
-actual kernel load address. Both physical fields remain `null`. The
+actual kernel load address. Both physical fields remain `null`; the current
+native runtime therefore falls back to Qualcomm `kernel_phys_load = 0xa8000000`
+and `kernel_phys_offset = 0x80000000`. The vendor boot reserved-memory map does
+not overlap `0xa8000000`, but it cannot confirm the load address. The
 `multicast_waiter.waiter_off` and `buffer_size` values were emitted as 5.x
 extractor heuristics, not measured for this device. The selected route has
 not passed a device gate.
+
+On 2026-11-09, the device owner imported this candidate into the installed
+GhostLock 1.2 app and reported **Profile ready**. That confirms the app's
+configuration validation, not the physical mapping or exploit behavior.
 
 To complete support, verify the remaining approximate fields and physical
 address mapping, then validate the selected route on this exact build. Only
